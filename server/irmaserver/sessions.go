@@ -152,7 +152,7 @@ var one *big.Int = big.NewInt(1)
 
 func (s *Server) newSession(action irma.Action, request irma.RequestorRequest) *session {
 	token := common.NewSessionToken()
-	clientToken := common.NewSessionToken()
+	clientToken := "F6S2w69mpyX8ABOHbTtO"
 
 	ses := &session{
 		action:      action,
