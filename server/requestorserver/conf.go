@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/go-errors/errors"
-	irma "github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/internal/common"
-	"github.com/privacybydesign/irmago/server"
+	irma "github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
+	"github.com/markuskreukniet/irmago-measurements/server"
 )
 
 type Configuration struct {

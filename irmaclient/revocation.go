@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/go-errors/errors"
+	irma "github.com/markuskreukniet/irmago-measurements"
 	"github.com/privacybydesign/gabi/revocation"
-	irma "github.com/privacybydesign/irmago"
 	"github.com/sirupsen/logrus"
 )
 

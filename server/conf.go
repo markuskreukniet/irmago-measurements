@@ -12,10 +12,10 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-errors/errors"
+	irma "github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
 	"github.com/privacybydesign/gabi"
 	"github.com/privacybydesign/gabi/big"
-	irma "github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/internal/common"
 	"github.com/sirupsen/logrus"
 )
 

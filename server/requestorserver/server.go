@@ -18,10 +18,10 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
-	"github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/internal/common"
-	"github.com/privacybydesign/irmago/server"
-	"github.com/privacybydesign/irmago/server/irmaserver"
+	"github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
+	"github.com/markuskreukniet/irmago-measurements/server"
+	"github.com/markuskreukniet/irmago-measurements/server/irmaserver"
 	"github.com/sirupsen/logrus"
 )
 

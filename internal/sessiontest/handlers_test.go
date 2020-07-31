@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/go-errors/errors"
-	"github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/irmaclient"
+	"github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/irmaclient"
 	"github.com/stretchr/testify/require"
 )
 

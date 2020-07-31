@@ -2,7 +2,7 @@ package irmaclient
 
 import (
 	"github.com/go-errors/errors"
-	"github.com/privacybydesign/irmago"
+	"github.com/markuskreukniet/irmago-measurements"
 )
 
 // keyshareEnrollmentHandler handles the keyshare attribute issuance session

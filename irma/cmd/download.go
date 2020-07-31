@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/go-errors/errors"
-	"github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/internal/common"
+	"github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
 	"github.com/spf13/cobra"
 )
 

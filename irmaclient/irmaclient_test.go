@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"testing"
 
+	irma "github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
+	"github.com/markuskreukniet/irmago-measurements/internal/test"
 	"github.com/privacybydesign/gabi"
-	irma "github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/internal/common"
-	"github.com/privacybydesign/irmago/internal/test"
 	"github.com/sirupsen/logrus"
 
 	"github.com/go-errors/errors"

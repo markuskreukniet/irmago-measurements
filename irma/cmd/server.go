@@ -8,10 +8,10 @@ import (
 	"syscall"
 
 	"github.com/go-errors/errors"
+	irma "github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/server"
+	"github.com/markuskreukniet/irmago-measurements/server/requestorserver"
 	"github.com/mitchellh/mapstructure"
-	irma "github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/server"
-	"github.com/privacybydesign/irmago/server/requestorserver"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"

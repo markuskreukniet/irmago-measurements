@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	irma "github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/server"
+	irma "github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/server"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/require"
 )

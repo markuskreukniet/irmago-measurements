@@ -31,10 +31,10 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-errors/errors"
 	"github.com/jasonlvhit/gocron"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
 	"github.com/privacybydesign/gabi"
 	"github.com/privacybydesign/gabi/big"
 	"github.com/privacybydesign/gabi/signed"
-	"github.com/privacybydesign/irmago/internal/common"
 	"github.com/sirupsen/logrus"
 )
 

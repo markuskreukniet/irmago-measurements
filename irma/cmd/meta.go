@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/go-errors/errors"
+	irma "github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
 	"github.com/privacybydesign/gabi"
 	"github.com/privacybydesign/gabi/big"
-	"github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/internal/common"
 	"github.com/spf13/cobra"
 )
 

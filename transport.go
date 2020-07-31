@@ -21,8 +21,8 @@ import (
 	"github.com/sirupsen/logrus"
 	prefixed "github.com/x-cray/logrus-prefixed-formatter"
 
-	"github.com/privacybydesign/irmago/internal/common"
-	"github.com/privacybydesign/irmago/internal/disable_sigpipe"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
+	"github.com/markuskreukniet/irmago-measurements/internal/disable_sigpipe"
 )
 
 // HTTPTransport sends and receives JSON messages to a HTTP server.

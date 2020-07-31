@@ -6,10 +6,10 @@ import (
 	"path/filepath"
 	"time"
 
+	irma "github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
 	"github.com/privacybydesign/gabi"
 	"github.com/privacybydesign/gabi/revocation"
-	irma "github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/internal/common"
 
 	"github.com/go-errors/errors"
 	"go.etcd.io/bbolt"

@@ -1,8 +1,8 @@
 package irmaclient
 
 import (
+	irma "github.com/markuskreukniet/irmago-measurements"
 	"github.com/privacybydesign/gabi"
-	"github.com/privacybydesign/irmago"
 )
 
 // credential represents an IRMA credential, whose zeroth attribute

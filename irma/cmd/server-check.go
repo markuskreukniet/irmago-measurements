@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/go-errors/errors"
-	"github.com/privacybydesign/irmago/server/requestorserver"
+	"github.com/markuskreukniet/irmago-measurements/server/requestorserver"
 	"github.com/spf13/cobra"
 )
 

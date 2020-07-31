@@ -18,7 +18,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-errors/errors"
-	"github.com/privacybydesign/irmago"
+	"github.com/markuskreukniet/irmago-measurements"
 	"github.com/sirupsen/logrus"
 	prefixed "github.com/x-cray/logrus-prefixed-formatter"
 )

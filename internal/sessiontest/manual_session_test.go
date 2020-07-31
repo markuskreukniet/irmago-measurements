@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"testing"
 
+	irma "github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/internal/test"
+	"github.com/markuskreukniet/irmago-measurements/irmaclient"
 	"github.com/privacybydesign/gabi"
 	"github.com/privacybydesign/gabi/big"
-	"github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/internal/test"
-	"github.com/privacybydesign/irmago/irmaclient"
 	"github.com/stretchr/testify/require"
 )
 

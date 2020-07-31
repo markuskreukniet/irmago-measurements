@@ -3,8 +3,8 @@ package server_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/server"
+	"github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/server"
 	"github.com/stretchr/testify/require"
 	"testing"
 )

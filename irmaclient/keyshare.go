@@ -13,9 +13,9 @@ import (
 	"github.com/bwesterb/go-atum"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-errors/errors"
+	irma "github.com/markuskreukniet/irmago-measurements"
 	"github.com/privacybydesign/gabi"
 	"github.com/privacybydesign/gabi/big"
-	"github.com/privacybydesign/irmago"
 )
 
 // This file contains an implementation of the client side of the keyshare protocol,
@@ -129,7 +129,7 @@ const (
 
 func newKeyshareServer(schemeManagerIdentifier irma.SchemeManagerIdentifier) (ks *keyshareServer, err error) {
 	ks = &keyshareServer{
-		Nonce: make([]byte, 32),
+		Nonce:                   make([]byte, 32),
 		SchemeManagerIdentifier: schemeManagerIdentifier,
 	}
 	_, err = rand.Read(ks.Nonce)

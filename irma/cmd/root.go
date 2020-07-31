@@ -6,7 +6,7 @@ import (
 	"runtime"
 
 	"github.com/go-errors/errors"
-	irma "github.com/privacybydesign/irmago"
+	irma "github.com/markuskreukniet/irmago-measurements"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )

@@ -6,7 +6,7 @@ import (
 
 	"github.com/bwesterb/go-atum"
 	"github.com/go-errors/errors"
-	"github.com/privacybydesign/irmago"
+	"github.com/markuskreukniet/irmago-measurements"
 )
 
 // LogEntry is a log entry of a past event.

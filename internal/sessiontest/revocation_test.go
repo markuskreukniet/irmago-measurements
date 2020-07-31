@@ -11,14 +11,14 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
+	irma "github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/internal/test"
+	"github.com/markuskreukniet/irmago-measurements/irmaclient"
+	"github.com/markuskreukniet/irmago-measurements/server"
+	"github.com/markuskreukniet/irmago-measurements/server/irmaserver"
 	"github.com/privacybydesign/gabi"
 	"github.com/privacybydesign/gabi/big"
 	"github.com/privacybydesign/gabi/revocation"
-	irma "github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/internal/test"
-	"github.com/privacybydesign/irmago/irmaclient"
-	"github.com/privacybydesign/irmago/server"
-	"github.com/privacybydesign/irmago/server/irmaserver"
 	"github.com/stretchr/testify/require"
 )
 

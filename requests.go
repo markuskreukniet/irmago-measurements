@@ -11,10 +11,10 @@ import (
 	"github.com/bwesterb/go-atum"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-errors/errors"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
 	"github.com/privacybydesign/gabi"
 	"github.com/privacybydesign/gabi/big"
 	"github.com/privacybydesign/gabi/revocation"
-	"github.com/privacybydesign/irmago/internal/common"
 )
 
 const (

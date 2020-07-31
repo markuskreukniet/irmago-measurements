@@ -17,12 +17,12 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-errors/errors"
+	irma "github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
+	"github.com/markuskreukniet/irmago-measurements/server"
 	"github.com/privacybydesign/gabi"
 	"github.com/privacybydesign/gabi/big"
 	"github.com/privacybydesign/gabi/revocation"
-	"github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/internal/common"
-	"github.com/privacybydesign/irmago/server"
 	"github.com/sirupsen/logrus"
 )
 

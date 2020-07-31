@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/go-errors/errors"
-	"github.com/privacybydesign/irmago/internal/common"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
 )
 
 // This file contains data types for scheme managers, issuers, credential types

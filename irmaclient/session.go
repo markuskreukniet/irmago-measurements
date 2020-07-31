@@ -11,10 +11,10 @@ import (
 
 	"github.com/bwesterb/go-atum"
 	"github.com/go-errors/errors"
+	irma "github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
 	"github.com/privacybydesign/gabi"
 	"github.com/privacybydesign/gabi/big"
-	"github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/internal/common"
 )
 
 // This file contains the logic and state of performing IRMA sessions, communicates

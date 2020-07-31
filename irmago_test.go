@@ -8,11 +8,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
+	"github.com/markuskreukniet/irmago-measurements/internal/test"
 	"github.com/privacybydesign/gabi"
 	"github.com/privacybydesign/gabi/big"
 	"github.com/privacybydesign/gabi/revocation"
-	"github.com/privacybydesign/irmago/internal/common"
-	"github.com/privacybydesign/irmago/internal/test"
 	"github.com/stretchr/testify/require"
 )
 

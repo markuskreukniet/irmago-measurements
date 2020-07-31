@@ -5,11 +5,11 @@ import (
 	"time"
 
 	"github.com/alexandrevicenzi/go-sse"
+	irma "github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
+	"github.com/markuskreukniet/irmago-measurements/server"
 	"github.com/privacybydesign/gabi"
 	"github.com/privacybydesign/gabi/big"
-	"github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/internal/common"
-	"github.com/privacybydesign/irmago/server"
 
 	"github.com/sirupsen/logrus"
 )

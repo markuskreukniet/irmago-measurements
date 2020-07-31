@@ -9,8 +9,8 @@ import (
 	"fmt"
 
 	"github.com/go-errors/errors"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
 	"github.com/privacybydesign/gabi/signed"
-	"github.com/privacybydesign/irmago/internal/common"
 	"github.com/spf13/cobra"
 )
 

@@ -7,10 +7,10 @@ import (
 	"os"
 	"path/filepath"
 
+	irma "github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
 	"github.com/privacybydesign/gabi"
 	"github.com/privacybydesign/gabi/revocation"
-	irma "github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/internal/common"
 )
 
 // This file contains the legacy storage based on files. These functions are needed

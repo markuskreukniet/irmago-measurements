@@ -11,10 +11,10 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-errors/errors"
+	irma "github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
+	"github.com/markuskreukniet/irmago-measurements/server"
 	"github.com/mdp/qrterminal"
-	"github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/internal/common"
-	"github.com/privacybydesign/irmago/server"
 	sseclient "github.com/sietseringers/go-sse"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"

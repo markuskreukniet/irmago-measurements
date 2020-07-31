@@ -1,6 +1,6 @@
 package main
 
-import "github.com/privacybydesign/irmago/irma/cmd"
+import "github.com/markuskreukniet/irmago-measurements/irma/cmd"
 
 func main() {
 	cmd.Execute()

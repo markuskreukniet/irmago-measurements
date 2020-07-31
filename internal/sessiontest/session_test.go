@@ -11,10 +11,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/internal/test"
-	"github.com/privacybydesign/irmago/irmaclient"
-	"github.com/privacybydesign/irmago/server"
+	"github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/internal/test"
+	"github.com/markuskreukniet/irmago-measurements/irmaclient"
+	"github.com/markuskreukniet/irmago-measurements/server"
 	"github.com/stretchr/testify/require"
 )
 

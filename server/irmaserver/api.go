@@ -12,8 +12,8 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-errors/errors"
 	"github.com/jasonlvhit/gocron"
-	"github.com/privacybydesign/irmago"
-	"github.com/privacybydesign/irmago/server"
+	"github.com/markuskreukniet/irmago-measurements"
+	"github.com/markuskreukniet/irmago-measurements/server"
 	"github.com/sirupsen/logrus"
 )
 

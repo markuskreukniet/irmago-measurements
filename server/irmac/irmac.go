@@ -12,8 +12,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/privacybydesign/irmago/server"
-	"github.com/privacybydesign/irmago/server/irmaserver"
+	"github.com/markuskreukniet/irmago-measurements/server"
+	"github.com/markuskreukniet/irmago-measurements/server/irmaserver"
 )
 
 var s *irmaserver.Server

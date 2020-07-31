@@ -1,4 +1,4 @@
-module github.com/privacybydesign/irmago
+module github.com/markuskreukniet/irmago-measurements
 
 go 1.13
 

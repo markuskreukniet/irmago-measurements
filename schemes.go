@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/privacybydesign/irmago/internal/common"
+	"github.com/markuskreukniet/irmago-measurements/internal/common"
 )
 
 // SchemeManagerPointer points to a remote IRMA scheme, containing information to download the scheme,

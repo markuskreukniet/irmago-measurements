@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	irma "github.com/privacybydesign/irmago"
+	irma "github.com/markuskreukniet/irmago-measurements"
 )
 
 // This file contains the update mechanism for Client
