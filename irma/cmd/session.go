@@ -44,56 +44,48 @@ irma session --issue irma-demo.MijnOverheid.ageLower=yes,yes,yes,no --disclose i
 irma session --request '{"type":"disclosing","content":[{"label":"BSN","attributes":["irma-demo.MijnOverheid.root.BSN"]}]}'
 irma session --server http://localhost:8088 --authmethod token --key mytoken --disclose irma-demo.MijnOverheid.root.BSN`,
 	Run: func(cmd *cobra.Command, args []string) {
-		performSession(cmd, args)
+		request, irmaconfig, err := configureSession(cmd)
+		if err != nil {
+			die("", err)
+		}
+
+		// Make sure we always run with latest configuration
+		if err = irmaconfig.UpdateSchemes(); err != nil {
+			die("failed updating schemes", err)
+		}
+
+		var result *server.SessionResult
+		url, _ := cmd.Flags().GetString("url")
+		serverurl, _ := cmd.Flags().GetString("server")
+		noqr, _ := cmd.Flags().GetBool("noqr")
+		flags := cmd.Flags()
+
+		if url != defaulturl && serverurl != "" {
+			die("Failed to read configuration", errors.New("--url can't be combined with --server"))
+		}
+
+		if serverurl == "" {
+			port, _ := flags.GetInt("port")
+			privatekeysPath, _ := flags.GetString("privkeys")
+			verbosity, _ := cmd.Flags().GetCount("verbose")
+			result, err = libraryRequest(request, irmaconfig, url, port, privatekeysPath, noqr, verbosity)
+		} else {
+			authmethod, _ := flags.GetString("authmethod")
+			key, _ := flags.GetString("key")
+			name, _ := flags.GetString("name")
+			result, err = serverRequest(request, serverurl, authmethod, key, name, noqr)
+		}
+		if err != nil {
+			die("Session failed", err)
+		}
+
+		printSessionResult(result)
+
+		// Done!
+		if httpServer != nil {
+			_ = httpServer.Close()
+		}
 	},
-}
-
-func performSession(cmd *cobra.Command, args []string) {
-	request, irmaconfig, err := configureSession(cmd)
-	if err != nil {
-		die("", err)
-	}
-
-	// Make sure we always run with latest configuration
-	if err = irmaconfig.UpdateSchemes(); err != nil {
-		die("failed updating schemes", err)
-	}
-
-	var result *server.SessionResult
-	url, _ := cmd.Flags().GetString("url")
-	serverurl, _ := cmd.Flags().GetString("server")
-	noqr, _ := cmd.Flags().GetBool("noqr")
-	flags := cmd.Flags()
-
-	if url != defaulturl && serverurl != "" {
-		die("Failed to read configuration", errors.New("--url can't be combined with --server"))
-	}
-
-	if serverurl == "" {
-		port, _ := flags.GetInt("port")
-		privatekeysPath, _ := flags.GetString("privkeys")
-		verbosity, _ := cmd.Flags().GetCount("verbose")
-		result, err = libraryRequest(request, irmaconfig, url, port, privatekeysPath, noqr, verbosity)
-	} else {
-		authmethod, _ := flags.GetString("authmethod")
-		key, _ := flags.GetString("key")
-		name, _ := flags.GetString("name")
-		result, err = serverRequest(request, serverurl, authmethod, key, name, noqr)
-	}
-	if err != nil {
-		die("Session failed", err)
-	}
-
-	printSessionResult(result)
-
-	// Done!
-	if httpServer != nil {
-		_ = httpServer.Close()
-	}
-
-	if err == nil {
-		performSession(cmd, args)
-	}
 }
 
 func libraryRequest(

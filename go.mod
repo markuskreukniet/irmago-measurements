@@ -8,6 +8,7 @@ require (
 	github.com/bwesterb/go-atum v1.0.0
 	github.com/bwesterb/go-exptable v1.0.0 // indirect
 	github.com/certifi/gocertifi v0.0.0-20180118203423-deb3ae2ef261 // indirect
+	github.com/cretz/bine v0.1.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fxamacker/cbor v1.5.0
 	github.com/getsentry/raven-go v0.0.0-20180121060056-563b81fc02b7
@@ -19,8 +20,10 @@ require (
 	github.com/hashicorp/go-retryablehttp v0.6.2
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/ipsn/go-libtor v1.0.320
 	github.com/jasonlvhit/gocron v0.0.0-20180312192515-54194c9749d4
 	github.com/jinzhu/gorm v1.9.12
+	github.com/jordan-wright/email v4.0.1-0.20200917010138-e1c00e156980+incompatible
 	github.com/lib/pq v1.3.0 // indirect
 	github.com/mattn/go-colorable v0.0.9 // indirect
 	github.com/mattn/go-isatty v0.0.4 // indirect
@@ -48,6 +51,7 @@ require (
 	github.com/x448/float16 v0.8.4 // indirect
 	go.etcd.io/bbolt v1.3.2
 	golang.org/x/crypto v0.0.0-20200204104054-c9f3fb736b72 // indirect
+	golang.org/x/net v0.0.0-20190620200207-3b0461eec859
 )
 
 replace github.com/spf13/pflag => github.com/sietseringers/pflag v1.0.4-0.20190111213756-a45bfec10d59
