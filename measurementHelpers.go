@@ -25,9 +25,11 @@ const (
 
 	measurementsDoneText string = "measurements done: "
 
-	folderPath string = "/data/user/0/foundation.privacybydesign.irmamobile.alpha/v2"
-	filePart   string = "/measurementsDone.txt"
-	filePath   string = folderPath + filePart
+	folderPath      string = "/data/user/0/foundation.privacybydesign.irmamobile.alpha/v2"
+	filePart        string = "/measurementsDone.txt"
+	filePartFlutter string = "/latestMeasurementsFlutter.txt"
+	filePath        string = folderPath + filePart
+	filePathFlutter string = folderPath + filePartFlutter
 
 	filePartDisclosureNewSession           string = "/disclosureNewSession.txt"
 	filePartDisclosureRespondPermission    string = "/disclosureRespondPermission.txt"
@@ -170,6 +172,31 @@ func addFilePathAndEmailTextIfExist(filePaths []string,
 	return filePaths, emailText
 }
 
+func determineFlutterMeasurementText(measurementType int) string {
+	flutterMeasurementText := ""
+
+	switch measurementType {
+	case DisclosureNewSession:
+		flutterMeasurementText = "disclosureNewSession: "
+	case DisclosureRespondPermission:
+		flutterMeasurementText = "\ndisclosureRespondPermission: "
+	case IssuanceNewSession:
+		flutterMeasurementText = "issuanceNewSession: "
+	case IssuanceRespondPermission:
+		flutterMeasurementText = "\nissuanceRespondPermission: "
+	case TorDisclosureNewSession:
+		flutterMeasurementText = "torDisclosureNewSession: "
+	case TorDisclosureRespondPermission:
+		flutterMeasurementText = "\ntorDisclosureRespondPermission: "
+	case TorIssuanceNewSession:
+		flutterMeasurementText = "torIssuanceNewSession: "
+	case TorIssuanceRespondPermission:
+		flutterMeasurementText = "\ntorIssuanceRespondPermission: "
+	}
+
+	return flutterMeasurementText
+}
+
 // public functions
 
 func IncrementMeasurementAndDetermineAgain() bool {
@@ -189,16 +216,11 @@ func IncrementMeasurementAndDetermineAgain() bool {
 	}
 }
 
-func SendResultsAndResetMeasurements(newFolderPaths ...string) {
-	usableFolderPath := folderPath
-	if len(newFolderPaths) > 0 {
-		usableFolderPath = newFolderPaths[0]
-	}
-
+func SendResultsAndResetMeasurements() {
 	var filePaths []string
 	emailText := ""
 
-	disclosureNewSessionAverageFilePath := usableFolderPath +
+	disclosureNewSessionAverageFilePath := folderPath +
 		filePartDisclosureNewSession
 
 	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
@@ -206,7 +228,7 @@ func SendResultsAndResetMeasurements(newFolderPaths ...string) {
 		emailText,
 		"disclosure new session")
 
-	disclosureRespondPermissionAverageFilePath := usableFolderPath +
+	disclosureRespondPermissionAverageFilePath := folderPath +
 		filePartDisclosureRespondPermission
 
 	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
@@ -214,7 +236,7 @@ func SendResultsAndResetMeasurements(newFolderPaths ...string) {
 		emailText,
 		"disclosure respond permission")
 
-	issuanceNewSessionAverageFilePath := usableFolderPath +
+	issuanceNewSessionAverageFilePath := folderPath +
 		filePartIssuanceNewSession
 
 	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
@@ -222,7 +244,7 @@ func SendResultsAndResetMeasurements(newFolderPaths ...string) {
 		emailText,
 		"issuance new session")
 
-	issuanceRespondPermissionAverageFilePath := usableFolderPath +
+	issuanceRespondPermissionAverageFilePath := folderPath +
 		filePartIssuanceRespondPermission
 
 	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
@@ -230,7 +252,7 @@ func SendResultsAndResetMeasurements(newFolderPaths ...string) {
 		emailText,
 		"issuance respond permission")
 
-	torDisclosureNewSessionAverageFilePath := usableFolderPath +
+	torDisclosureNewSessionAverageFilePath := folderPath +
 		filePartTorDisclosureNewSession
 
 	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
@@ -238,7 +260,7 @@ func SendResultsAndResetMeasurements(newFolderPaths ...string) {
 		emailText,
 		"disclosure new session over Tor")
 
-	torDisclosureRespondPermissionAverageFilePath := usableFolderPath +
+	torDisclosureRespondPermissionAverageFilePath := folderPath +
 		filePartTorDisclosureRespondPermission
 
 	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
@@ -246,7 +268,7 @@ func SendResultsAndResetMeasurements(newFolderPaths ...string) {
 		emailText,
 		"disclosure respond permission over Tor")
 
-	torIssuanceNewSessionAverageFilePath := usableFolderPath +
+	torIssuanceNewSessionAverageFilePath := folderPath +
 		filePartTorIssuanceNewSession
 
 	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
@@ -254,7 +276,7 @@ func SendResultsAndResetMeasurements(newFolderPaths ...string) {
 		emailText,
 		"issuance new session over Tor")
 
-	torIssuanceRespondPermissionAverageFilePath := usableFolderPath +
+	torIssuanceRespondPermissionAverageFilePath := folderPath +
 		filePartTorIssuanceRespondPermission
 
 	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
@@ -273,31 +295,26 @@ func SendResultsAndResetMeasurements(newFolderPaths ...string) {
 	replaceFileContentWithString(filePath, measurementsDoneText+"0")
 }
 
-func AddMeasurementResult(measurementType int, result int64, newFolderPaths ...string) {
-	usableFolderPath := folderPath
-	if len(newFolderPaths) > 0 {
-		usableFolderPath = newFolderPaths[0]
-	}
-
+func AddMeasurementResult(measurementType int, result int64) {
 	filePath := ""
 
 	switch measurementType {
 	case DisclosureNewSession:
-		filePath = usableFolderPath + filePartDisclosureNewSession
+		filePath = folderPath + filePartDisclosureNewSession
 	case DisclosureRespondPermission:
-		filePath = usableFolderPath + filePartDisclosureRespondPermission
+		filePath = folderPath + filePartDisclosureRespondPermission
 	case IssuanceNewSession:
-		filePath = usableFolderPath + filePartIssuanceNewSession
+		filePath = folderPath + filePartIssuanceNewSession
 	case IssuanceRespondPermission:
-		filePath = usableFolderPath + filePartIssuanceRespondPermission
+		filePath = folderPath + filePartIssuanceRespondPermission
 	case TorDisclosureNewSession:
-		filePath = usableFolderPath + filePartTorDisclosureNewSession
+		filePath = folderPath + filePartTorDisclosureNewSession
 	case TorDisclosureRespondPermission:
-		filePath = usableFolderPath + filePartTorDisclosureRespondPermission
+		filePath = folderPath + filePartTorDisclosureRespondPermission
 	case TorIssuanceNewSession:
-		filePath = usableFolderPath + filePartTorIssuanceNewSession
+		filePath = folderPath + filePartTorIssuanceNewSession
 	case TorIssuanceRespondPermission:
-		filePath = usableFolderPath + filePartTorIssuanceRespondPermission
+		filePath = folderPath + filePartTorIssuanceRespondPermission
 	}
 
 	stringContent := ""
@@ -311,9 +328,24 @@ func AddMeasurementResult(measurementType int, result int64, newFolderPaths ...s
 		possibleLineFeed = ""
 	}
 
-	stringContent += possibleLineFeed + measurementText + strconv.FormatInt(result, 10)
+	stringResult := strconv.FormatInt(result, 10)
+
+	stringContent += possibleLineFeed + measurementText + stringResult
 
 	replaceFileContentWithString(filePath, stringContent)
+
+	// for Flutter part
+	stringContentFlutter := ""
+
+	if pathDoesExist(filePathFlutter) {
+		stringContentFlutter = determineFileStringContent(filePathFlutter)
+	}
+
+	stringContentFlutter +=
+		determineFlutterMeasurementText(measurementType) + stringResult
+
+	replaceFileContentWithString(filePathFlutter, stringContentFlutter)
+
 }
 
 func StopProgramWhenNeeded(useTor bool, httpClient *http.Client) {
@@ -322,4 +354,8 @@ func StopProgramWhenNeeded(useTor bool, httpClient *http.Client) {
 			log.Fatal("use Tor && client is not connected to Tor")
 		}
 	}
+}
+
+func ClearFlutterMeasurements() {
+	replaceFileContentWithString(filePathFlutter, "")
 }
