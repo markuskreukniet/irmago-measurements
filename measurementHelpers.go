@@ -23,6 +23,11 @@ const (
 	TorIssuanceNewSession          int = iota
 	TorIssuanceRespondPermission   int = iota
 
+	KssGetCommitments    int = iota
+	KssGetProofPs        int = iota
+	TorKssGetCommitments int = iota
+	TorKssGetProofPs     int = iota
+
 	measurementsDoneText string = "measurements done: "
 
 	folderPath      string = "/data/user/0/foundation.privacybydesign.irmamobile.alpha/v2"
@@ -39,6 +44,11 @@ const (
 	filePartTorDisclosureRespondPermission string = "/torDisclosureRespondPermission.txt"
 	filePartTorIssuanceNewSession          string = "/torIssuanceNewSession.txt"
 	filePartTorIssuanceRespondPermission   string = "/torIssuanceRespondPermission.txt"
+
+	filePartKssGetCommitments    string = "/kssGetCommitments.txt"
+	filePartKssGetProofPs        string = "/kssGetProofPs.txt"
+	filePartTorKssGetCommitments string = "/torKssGetCommitments.txt"
+	filePartTorKssGetProofPs     string = "/torKssGetProofPs.txt"
 
 	measurementText string = "measurement: "
 )
@@ -192,6 +202,15 @@ func determineFlutterMeasurementText(measurementType int) string {
 		flutterMeasurementText = "torIssuanceNewSession: "
 	case TorIssuanceRespondPermission:
 		flutterMeasurementText = "\ntorIssuanceRespondPermission: "
+
+	case KssGetCommitments:
+		flutterMeasurementText = "kssGetCommitments: "
+	case KssGetProofPs:
+		flutterMeasurementText = "\nkssGetProofPs: "
+	case TorKssGetCommitments:
+		flutterMeasurementText = "torKssGetCommitments: "
+	case TorKssGetProofPs:
+		flutterMeasurementText = "\ntorKssGetProofPs: "
 	}
 
 	return flutterMeasurementText
@@ -284,6 +303,40 @@ func SendResultsAndResetMeasurements() {
 		emailText,
 		"issuance respond permission over Tor")
 
+	// KSS - start
+	kssGetCommitmentsAverageFilePath := folderPath +
+		filePartKssGetCommitments
+
+	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
+		kssGetCommitmentsAverageFilePath,
+		emailText,
+		"KSS GetCommitments")
+
+	kssGetProofPsAverageFilePath := folderPath +
+		filePartKssGetProofPs
+
+	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
+		kssGetProofPsAverageFilePath,
+		emailText,
+		"KSS GetProofPs")
+
+	torKssGetCommitmentsAverageFilePath := folderPath +
+		filePartTorKssGetCommitments
+
+	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
+		torKssGetCommitmentsAverageFilePath,
+		emailText,
+		"Tor KSS GetCommitments")
+
+	torKssGetProofPsAverageFilePath := folderPath +
+		filePartTorKssGetProofPs
+
+	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
+		torKssGetProofPsAverageFilePath,
+		emailText,
+		"Tor KSS GetProofPs")
+	// KSS - end
+
 	emailText += "The averages are in microseconds."
 
 	sendMail(emailText, filePaths)
@@ -315,6 +368,15 @@ func AddMeasurementResult(measurementType int, result int64) {
 		filePath = folderPath + filePartTorIssuanceNewSession
 	case TorIssuanceRespondPermission:
 		filePath = folderPath + filePartTorIssuanceRespondPermission
+
+	case KssGetCommitments:
+		filePath = folderPath + filePartKssGetCommitments
+	case KssGetProofPs:
+		filePath = folderPath + filePartKssGetProofPs
+	case TorKssGetCommitments:
+		filePath = folderPath + filePartTorKssGetCommitments
+	case TorKssGetProofPs:
+		filePath = folderPath + filePartTorKssGetProofPs
 	}
 
 	stringContent := ""
