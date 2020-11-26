@@ -52,6 +52,7 @@ type keyshareSession struct {
 	timestamp        *atum.Timestamp
 	pinCheck         bool
 	preferences      Preferences
+	client           *Client
 }
 
 type keyshareServer struct {
@@ -159,6 +160,8 @@ func startKeyshareSession(
 	conf *irma.Configuration,
 	keyshareServers map[irma.SchemeManagerIdentifier]*keyshareServer,
 	preferences Preferences,
+	client *Client,
+	httpClients ...*http.Client,
 ) {
 	ksscount := 0
 	for managerID := range session.Identifiers().SchemeManagers {
@@ -189,6 +192,7 @@ func startKeyshareSession(
 		timestamp:        timestamp,
 		pinCheck:         false,
 		preferences:      preferences,
+		client:           client,
 	}
 
 	for managerID := range session.Identifiers().SchemeManagers {
@@ -198,7 +202,15 @@ func startKeyshareSession(
 		}
 
 		ks.keyshareServer = ks.keyshareServers[managerID]
-		transport := irma.NewHTTPTransport(scheme.KeyshareServer, !ks.preferences.DeveloperMode)
+
+		var transport *irma.HTTPTransport
+
+		if len(httpClients) > 0 {
+			transport = irma.NewHTTPTransport(scheme.KeyshareServer, !ks.preferences.DeveloperMode, httpClients[0])
+		} else {
+			transport = irma.NewHTTPTransport(scheme.KeyshareServer, !ks.preferences.DeveloperMode)
+		}
+
 		transport.SetHeader(kssUsernameHeader, ks.keyshareServer.Username)
 		transport.SetHeader(kssAuthHeader, "Bearer "+ks.keyshareServer.token)
 		transport.SetHeader(kssVersionHeader, "2")
@@ -369,7 +381,16 @@ func (ks *keyshareSession) GetCommitments() {
 
 		transport := ks.transports[managerID]
 		comms := &proofPCommitmentMap{}
+
+		timeStart := time.Now()
+
 		err := transport.Post("prove/getCommitments", comms, pkids[managerID])
+
+		timeEnd := time.Now()
+		difference := timeEnd.Sub(timeStart).Microseconds()
+
+		ks.client.KssGetCommitmentsMeasurement = difference
+
 		if err != nil {
 			if err.(*irma.SessionError).RemoteError != nil &&
 				err.(*irma.SessionError).RemoteError.Status == http.StatusForbidden && !ks.pinCheck {
@@ -417,11 +438,20 @@ func (ks *keyshareSession) GetProofPs() {
 			continue
 		}
 		var j string
+
+		timeStart := time.Now()
+
 		err := transport.Post("prove/getResponse", &j, challenge)
 		if err != nil {
 			ks.sessionHandler.KeyshareError(&managerID, err)
 			return
 		}
+
+		timeEnd := time.Now()
+		difference := timeEnd.Sub(timeStart).Microseconds()
+
+		ks.client.KssGetProofPsMeasurement = difference
+
 		responses[managerID] = j
 	}
 
