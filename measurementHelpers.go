@@ -28,6 +28,20 @@ const (
 	TorKssGetCommitments int = iota
 	TorKssGetProofPs     int = iota
 
+	DisclosureHttpsNewSession           int = iota
+	DisclosureHttpsRespondPermission    int = iota
+	IssuanceHttpsNewSession             int = iota
+	IssuanceHttpsRespondPermission      int = iota
+	TorDisclosureHttpsNewSession        int = iota
+	TorDisclosureHttpsRespondPermission int = iota
+	TorIssuanceHttpsNewSession          int = iota
+	TorIssuanceHttpsRespondPermission   int = iota
+
+	KssHttpsGetCommitments    int = iota
+	KssHttpsGetProofPs        int = iota
+	TorKssHttpsGetCommitments int = iota
+	TorKssHttpsGetProofPs     int = iota
+
 	measurementsDoneText string = "measurements done: "
 
 	folderPath      string = "/data/user/0/foundation.privacybydesign.irmamobile.alpha/v2"
@@ -49,6 +63,22 @@ const (
 	filePartKssGetProofPs        string = "/kssGetProofPs.txt"
 	filePartTorKssGetCommitments string = "/torKssGetCommitments.txt"
 	filePartTorKssGetProofPs     string = "/torKssGetProofPs.txt"
+
+	// HTTPS - start
+	filePartDisclosureHttpsNewSession           string = "/disclosureHttpsNewSession.txt"
+	filePartDisclosureHttpsRespondPermission    string = "/disclosureHttpsRespondPermission.txt"
+	filePartIssuanceHttpsNewSession             string = "/issuanceHttpsNewSession.txt"
+	filePartIssuanceHttpsRespondPermission      string = "/issuanceHttpsRespondPermission.txt"
+	filePartTorDisclosureHttpsNewSession        string = "/torDisclosureHttpsNewSession.txt"
+	filePartTorDisclosureHttpsRespondPermission string = "/torDisclosureHttpsRespondPermission.txt"
+	filePartTorIssuanceHttpsNewSession          string = "/torIssuanceHttpsNewSession.txt"
+	filePartTorIssuanceHttpsRespondPermission   string = "/torIssuanceHttpsRespondPermission.txt"
+
+	filePartKssHttpsGetCommitments    string = "/kssHttpsGetCommitments.txt"
+	filePartKssHttpsGetProofPs        string = "/kssHttpsGetProofPs.txt"
+	filePartTorKssHttpsGetCommitments string = "/torKssHttpsGetCommitments.txt"
+	filePartTorKssHttpsGetProofPs     string = "/torKssHttpsGetProofPs.txt"
+	// HTTPS - end
 
 	measurementText string = "measurement: "
 )
@@ -204,13 +234,41 @@ func determineFlutterMeasurementText(measurementType int) string {
 		flutterMeasurementText = "\ntorIssuanceRespondPermission: "
 
 	case KssGetCommitments:
-		flutterMeasurementText = "kssGetCommitments: "
+		flutterMeasurementText = "\nkssGetCommitments: "
 	case KssGetProofPs:
 		flutterMeasurementText = "\nkssGetProofPs: "
 	case TorKssGetCommitments:
-		flutterMeasurementText = "torKssGetCommitments: "
+		flutterMeasurementText = "\ntorKssGetCommitments: "
 	case TorKssGetProofPs:
 		flutterMeasurementText = "\ntorKssGetProofPs: "
+
+		// HTTPS - start
+	case DisclosureHttpsNewSession:
+		flutterMeasurementText = "disclosureHttpsNewSession: "
+	case DisclosureHttpsRespondPermission:
+		flutterMeasurementText = "\ndisclosureHttpsRespondPermission: "
+	case IssuanceHttpsNewSession:
+		flutterMeasurementText = "issuanceHttpsNewSession: "
+	case IssuanceHttpsRespondPermission:
+		flutterMeasurementText = "\nissuanceHttpsRespondPermission: "
+	case TorDisclosureHttpsNewSession:
+		flutterMeasurementText = "torDisclosureHttpsNewSession: "
+	case TorDisclosureHttpsRespondPermission:
+		flutterMeasurementText = "\ntorDisclosureHttpsRespondPermission: "
+	case TorIssuanceHttpsNewSession:
+		flutterMeasurementText = "torIssuanceHttpsNewSession: "
+	case TorIssuanceHttpsRespondPermission:
+		flutterMeasurementText = "\ntorIssuanceHttpsRespondPermission: "
+
+	case KssHttpsGetCommitments:
+		flutterMeasurementText = "\nkssHttpsGetCommitments: "
+	case KssHttpsGetProofPs:
+		flutterMeasurementText = "\nkssHttpsGetProofPs: "
+	case TorKssHttpsGetCommitments:
+		flutterMeasurementText = "\ntorKssHttpsGetCommitments: "
+	case TorKssHttpsGetProofPs:
+		flutterMeasurementText = "\ntorKssHttpsGetProofPs: "
+		// HTTPS - end
 	}
 
 	return flutterMeasurementText
@@ -337,6 +395,106 @@ func SendResultsAndResetMeasurements() {
 		"Tor KSS GetProofPs")
 	// KSS - end
 
+	// HTTPS - start
+	disclosureHttpsNewSessionAverageFilePath := folderPath +
+		filePartDisclosureHttpsNewSession
+
+	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
+		disclosureHttpsNewSessionAverageFilePath,
+		emailText,
+		"disclosure new session over HTTPS")
+
+	disclosureHttpsRespondPermissionAverageFilePath := folderPath +
+		filePartDisclosureHttpsRespondPermission
+
+	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
+		disclosureHttpsRespondPermissionAverageFilePath,
+		emailText,
+		"disclosure respond permission over HTTPS")
+
+	issuanceHttpsNewSessionAverageFilePath := folderPath +
+		filePartIssuanceHttpsNewSession
+
+	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
+		issuanceHttpsNewSessionAverageFilePath,
+		emailText,
+		"issuance new session over HTTPS")
+
+	issuanceHttpsRespondPermissionAverageFilePath := folderPath +
+		filePartIssuanceHttpsRespondPermission
+
+	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
+		issuanceHttpsRespondPermissionAverageFilePath,
+		emailText,
+		"issuance respond permission over HTTPS")
+
+	torDisclosureHttpsNewSessionAverageFilePath := folderPath +
+		filePartTorDisclosureHttpsNewSession
+
+	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
+		torDisclosureHttpsNewSessionAverageFilePath,
+		emailText,
+		"disclosure new session over Tor and HTTPS")
+
+	torDisclosureHttpsRespondPermissionAverageFilePath := folderPath +
+		filePartTorDisclosureHttpsRespondPermission
+
+	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
+		torDisclosureHttpsRespondPermissionAverageFilePath,
+		emailText,
+		"disclosure respond permission over Tor and HTTPS")
+
+	torIssuanceHttpsNewSessionAverageFilePath := folderPath +
+		filePartTorIssuanceHttpsNewSession
+
+	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
+		torIssuanceHttpsNewSessionAverageFilePath,
+		emailText,
+		"issuance new session over Tor and HTTPS")
+
+	torIssuanceHttpsRespondPermissionAverageFilePath := folderPath +
+		filePartTorIssuanceHttpsRespondPermission
+
+	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
+		torIssuanceHttpsRespondPermissionAverageFilePath,
+		emailText,
+		"issuance respond permission over Tor and HTTPS")
+
+	// KSS - start
+	kssHttpsGetCommitmentsAverageFilePath := folderPath +
+		filePartKssHttpsGetCommitments
+
+	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
+		kssHttpsGetCommitmentsAverageFilePath,
+		emailText,
+		"KSS GetCommitments over HTTPS")
+
+	kssHttpsGetProofPsAverageFilePath := folderPath +
+		filePartKssHttpsGetProofPs
+
+	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
+		kssHttpsGetProofPsAverageFilePath,
+		emailText,
+		"KSS GetProofPs over HTTPS")
+
+	torKssHttpsGetCommitmentsAverageFilePath := folderPath +
+		filePartTorKssHttpsGetCommitments
+
+	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
+		torKssHttpsGetCommitmentsAverageFilePath,
+		emailText,
+		"Tor KSS GetCommitments over HTTPS")
+
+	torKssHttpsGetProofPsAverageFilePath := folderPath +
+		filePartTorKssHttpsGetProofPs
+
+	filePaths, emailText = addFilePathAndEmailTextIfExist(filePaths,
+		torKssHttpsGetProofPsAverageFilePath,
+		emailText,
+		"Tor KSS GetProofPs over HTTPS")
+	// KSS - end
+	// HTTPS - end
+
 	emailText += "The averages are in microseconds."
 
 	sendMail(emailText, filePaths)
@@ -377,6 +535,34 @@ func AddMeasurementResult(measurementType int, result int64) {
 		filePath = folderPath + filePartTorKssGetCommitments
 	case TorKssGetProofPs:
 		filePath = folderPath + filePartTorKssGetProofPs
+
+		// HTTPS - start
+	case DisclosureHttpsNewSession:
+		filePath = folderPath + filePartDisclosureHttpsNewSession
+	case DisclosureHttpsRespondPermission:
+		filePath = folderPath + filePartDisclosureHttpsRespondPermission
+	case IssuanceHttpsNewSession:
+		filePath = folderPath + filePartIssuanceHttpsNewSession
+	case IssuanceHttpsRespondPermission:
+		filePath = folderPath + filePartIssuanceHttpsRespondPermission
+	case TorDisclosureHttpsNewSession:
+		filePath = folderPath + filePartTorDisclosureHttpsNewSession
+	case TorDisclosureHttpsRespondPermission:
+		filePath = folderPath + filePartTorDisclosureHttpsRespondPermission
+	case TorIssuanceHttpsNewSession:
+		filePath = folderPath + filePartTorIssuanceHttpsNewSession
+	case TorIssuanceHttpsRespondPermission:
+		filePath = folderPath + filePartTorIssuanceHttpsRespondPermission
+
+	case KssHttpsGetCommitments:
+		filePath = folderPath + filePartKssHttpsGetCommitments
+	case KssHttpsGetProofPs:
+		filePath = folderPath + filePartKssHttpsGetProofPs
+	case TorKssHttpsGetCommitments:
+		filePath = folderPath + filePartTorKssHttpsGetCommitments
+	case TorKssHttpsGetProofPs:
+		filePath = folderPath + filePartTorKssHttpsGetProofPs
+		// HTTPS - end
 	}
 
 	stringContent := ""
@@ -407,7 +593,6 @@ func AddMeasurementResult(measurementType int, result int64) {
 		determineFlutterMeasurementText(measurementType) + stringResult
 
 	replaceFileContentWithString(filePathFlutter, stringContentFlutter)
-
 }
 
 func StopProgramWhenNeeded(useTor bool, httpClient *http.Client) {
