@@ -1,12 +1,14 @@
 package irmaclient
 
 import (
+	"net/http"
 	"path/filepath"
 	"strconv"
 	"sync"
 	"time"
 
 	"github.com/bwesterb/go-atum"
+	"github.com/cretz/bine/tor"
 	"github.com/go-errors/errors"
 	irma "github.com/markuskreukniet/irmago-measurements"
 	"github.com/markuskreukniet/irmago-measurements/internal/common"
@@ -48,12 +50,24 @@ type Client struct {
 	keyshareServers  map[irma.SchemeManagerIdentifier]*keyshareServer
 	updates          []update
 
+	tor        *tor.Tor
+	cancel     func()
+	httpClient *http.Client
+
+	UseTor                       bool
+	MeasurementType              string
+	NewSessionMeasurement        int64
+	KssGetCommitmentsMeasurement int64
+	KssGetProofPsMeasurement     int64
+
 	lookup map[string]*credLookup
 
 	// Where we store/load it to/from
 	storage storage
 	// Legacy storage needed when client has not updated to the new storage yet
 	fileStorage fileStorage
+
+	FileStoragePublic string // maybe useless
 
 	// Other state
 	Preferences           Preferences
@@ -76,7 +90,7 @@ type Preferences struct {
 }
 
 var defaultPreferences = Preferences{
-	DeveloperMode: false,
+	DeveloperMode: true,
 }
 
 // KeyshareHandler is used for asking the user for his email address and PIN,
@@ -181,6 +195,8 @@ func New(
 	}
 	// Legacy storage does not need ensuring existence
 	client.fileStorage = fileStorage{storagePath: storagePath, Configuration: client.Configuration}
+
+	client.FileStoragePublic = storagePath // maybe useless
 
 	if client.Preferences, err = client.storage.LoadPreferences(); err != nil {
 		return nil, err

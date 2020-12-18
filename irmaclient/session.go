@@ -3,10 +3,12 @@ package irmaclient
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/url"
 	"reflect"
 	"runtime/debug"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/bwesterb/go-atum"
@@ -118,6 +120,25 @@ var maxVersion = &irma.ProtocolVersion{Major: 2, Minor: supportedVersions[2][len
 // NewSession starts a new IRMA session, given (along with a handler to pass feedback to) a session request.
 // When the request is not suitable to start an IRMA session from, it calls the Failure method of the specified Handler.
 func (client *Client) NewSession(sessionrequest string, handler Handler) SessionDismisser {
+	var httpClient *http.Client = nil
+
+	if client.UseTor {
+		if client.tor == nil {
+			// tor, cancel, httpClient := irma.MakeTorHttpClient("home/markus/measurements/")
+			tor, cancel, httpClientTor := irma.MakeTorHttpClient(client.FileStoragePublic)
+			// defer tor.Close()
+			// defer cancel()
+
+			client.tor = tor
+			client.cancel = cancel
+			client.httpClient = httpClientTor
+		} else {
+			client.cancel, client.httpClient = irma.RenewTorCircuit(client.tor, client.cancel)
+		}
+
+		httpClient = client.httpClient
+	}
+
 	bts := []byte(sessionrequest)
 
 	qr := &irma.Qr{}
@@ -126,7 +147,11 @@ func (client *Client) NewSession(sessionrequest string, handler Handler) Session
 			handler.Failure(&irma.SessionError{ErrorType: irma.ErrorInvalidRequest, Err: err})
 			return nil
 		}
-		return client.newQrSession(qr, handler)
+		if httpClient != nil {
+			return client.newQrSession(qr, handler, httpClient)
+		} else {
+			return client.newQrSession(qr, handler)
+		}
 	}
 
 	sigRequest := &irma.SignatureRequest{}
@@ -171,7 +196,7 @@ func (client *Client) newManualSession(request irma.SessionRequest, handler Hand
 }
 
 // newQrSession creates and starts a new interactive IRMA session
-func (client *Client) newQrSession(qr *irma.Qr, handler Handler) SessionDismisser {
+func (client *Client) newQrSession(qr *irma.Qr, handler Handler, httpClients ...*http.Client) SessionDismisser {
 	if qr.Type == irma.ActionRedirect {
 		newqr := &irma.Qr{}
 		transport := irma.NewHTTPTransport("", !client.Preferences.DeveloperMode)
@@ -198,6 +223,11 @@ func (client *Client) newQrSession(qr *irma.Qr, handler Handler) SessionDismisse
 		client:         client,
 		prepRevocation: make(chan error),
 	}
+
+	if len(httpClients) > 0 {
+		session.transport = irma.NewHTTPTransport(qr.URL, !client.Preferences.DeveloperMode, httpClients[0])
+	}
+
 	client.sessions.add(session)
 
 	session.Handler.StatusUpdate(session.Action, irma.StatusCommunicating)
@@ -225,17 +255,27 @@ func (client *Client) newQrSession(qr *irma.Qr, handler Handler) SessionDismisse
 		session.ServerURL += "/"
 	}
 
-	go session.getSessionInfo()
+	irma.StopProgramWhenNeeded(client.UseTor, client.httpClient)
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go session.getSessionInfo(&wg)
+	wg.Wait()
+
+	irma.StopProgramWhenNeeded(client.UseTor, client.httpClient)
+
 	return session
 }
 
 // Core session methods
 
 // getSessionInfo retrieves the first message in the IRMA protocol (only in interactive sessions)
-func (session *session) getSessionInfo() {
+func (session *session) getSessionInfo(wg *sync.WaitGroup) {
 	defer session.recoverFromPanic()
 
 	session.Handler.StatusUpdate(session.Action, irma.StatusCommunicating)
+
+	timeStart := time.Now()
 
 	// Get the first IRMA protocol message and parse it
 	err := session.transport.Get("", session.request)
@@ -244,6 +284,12 @@ func (session *session) getSessionInfo() {
 		return
 	}
 
+	timeEnd := time.Now()
+	difference := timeEnd.Sub(timeStart).Microseconds()
+
+	session.client.NewSessionMeasurement = difference
+
+	wg.Done()
 	session.processSessionInfo()
 }
 
@@ -379,6 +425,12 @@ func (session *session) requestPermission() {
 // asks for the pin and performs the keyshare session, and finishes the session by either POSTing the result to the
 // API server or returning it to the caller (in case of interactive and noninteractive sessions, respectively).
 func (session *session) doSession(proceed bool, choice *irma.DisclosureChoice) {
+	var httpClient *http.Client = nil
+
+	if session.client.UseTor {
+		httpClient = session.client.httpClient
+	}
+
 	defer session.recoverFromPanic()
 
 	if !proceed {
@@ -413,17 +465,35 @@ func (session *session) doSession(proceed bool, choice *irma.DisclosureChoice) {
 		if err != nil {
 			session.fail(&irma.SessionError{ErrorType: irma.ErrorCrypto, Err: err})
 		}
-		startKeyshareSession(
-			session,
-			session.Handler,
-			session.builders,
-			session.request,
-			session.issuerProofNonce,
-			session.timestamp,
-			session.client.Configuration,
-			session.client.keyshareServers,
-			session.client.Preferences,
-		)
+
+		if httpClient != nil {
+			startKeyshareSession(
+				session,
+				session.Handler,
+				session.builders,
+				session.request,
+				session.issuerProofNonce,
+				session.timestamp,
+				session.client.Configuration,
+				session.client.keyshareServers,
+				session.client.Preferences,
+				session.client,
+				httpClient,
+			)
+		} else {
+			startKeyshareSession(
+				session,
+				session.Handler,
+				session.builders,
+				session.request,
+				session.issuerProofNonce,
+				session.timestamp,
+				session.client.Configuration,
+				session.client.keyshareServers,
+				session.client.Preferences,
+				session.client,
+			)
+		}
 	}
 }
 
@@ -473,6 +543,10 @@ func (session *session) sendResponse(message interface{}) {
 			return
 		}
 		if session.IsInteractive() {
+			irma.StopProgramWhenNeeded(session.client.UseTor, session.client.httpClient)
+
+			timeStart := time.Now()
+
 			var response disclosureResponse
 			if err = session.transport.Post("proofs", &response, message); err != nil {
 				session.fail(err.(*irma.SessionError))
@@ -482,6 +556,52 @@ func (session *session) sendResponse(message interface{}) {
 				session.fail(&irma.SessionError{ErrorType: irma.ErrorRejected, Info: string(response)})
 				return
 			}
+
+			timeEnd := time.Now()
+			difference := timeEnd.Sub(timeStart).Microseconds()
+
+			irma.StopProgramWhenNeeded(session.client.UseTor, session.client.httpClient)
+
+			irma.ClearFlutterMeasurements()
+
+			switch session.client.MeasurementType {
+			case "disclosureMeasurement":
+				irma.AddMeasurementResult(irma.DisclosureNewSession, session.client.NewSessionMeasurement)
+				irma.AddMeasurementResult(irma.DisclosureRespondPermission, difference)
+
+				if session.client.KssGetCommitmentsMeasurement != -1 &&
+					session.client.KssGetProofPsMeasurement != -1 {
+					irma.AddMeasurementResult(irma.KssGetCommitments, session.client.KssGetCommitmentsMeasurement)
+					irma.AddMeasurementResult(irma.KssGetProofPs, session.client.KssGetProofPsMeasurement)
+				}
+			case "torDisclosureMeasurement":
+				irma.AddMeasurementResult(irma.TorDisclosureNewSession, session.client.NewSessionMeasurement)
+				irma.AddMeasurementResult(irma.TorDisclosureRespondPermission, difference)
+
+				if session.client.KssGetCommitmentsMeasurement != -1 &&
+					session.client.KssGetProofPsMeasurement != -1 {
+					irma.AddMeasurementResult(irma.TorKssGetCommitments, session.client.KssGetCommitmentsMeasurement)
+					irma.AddMeasurementResult(irma.TorKssGetProofPs, session.client.KssGetProofPsMeasurement)
+				}
+			case "disclosureHttpsMeasurement":
+				irma.AddMeasurementResult(irma.DisclosureHttpsNewSession, session.client.NewSessionMeasurement)
+				irma.AddMeasurementResult(irma.DisclosureHttpsRespondPermission, difference)
+
+				if session.client.KssGetCommitmentsMeasurement != -1 &&
+					session.client.KssGetProofPsMeasurement != -1 {
+					irma.AddMeasurementResult(irma.KssHttpsGetCommitments, session.client.KssGetCommitmentsMeasurement)
+					irma.AddMeasurementResult(irma.KssHttpsGetProofPs, session.client.KssGetProofPsMeasurement)
+				}
+			case "torDisclosureHttpsMeasurement":
+				irma.AddMeasurementResult(irma.TorDisclosureHttpsNewSession, session.client.NewSessionMeasurement)
+				irma.AddMeasurementResult(irma.TorDisclosureHttpsRespondPermission, difference)
+
+				if session.client.KssGetCommitmentsMeasurement != -1 &&
+					session.client.KssGetProofPsMeasurement != -1 {
+					irma.AddMeasurementResult(irma.TorKssHttpsGetCommitments, session.client.KssGetCommitmentsMeasurement)
+					irma.AddMeasurementResult(irma.TorKssHttpsGetProofPs, session.client.KssGetProofPsMeasurement)
+				}
+			}
 		}
 		log, err = session.createLogEntry(message)
 		if err != nil {
@@ -489,15 +609,68 @@ func (session *session) sendResponse(message interface{}) {
 			session.client.reportError(err)
 		}
 	case irma.ActionIssuing:
+		irma.StopProgramWhenNeeded(session.client.UseTor, session.client.httpClient)
+
+		timeStart := time.Now()
+
 		response := []*gabi.IssueSignatureMessage{}
 		if err = session.transport.Post("commitments", &response, message); err != nil {
 			session.fail(err.(*irma.SessionError))
 			return
 		}
+
+		timeEnd := time.Now()
+
 		if err = session.client.ConstructCredentials(response, session.request.(*irma.IssuanceRequest), session.builders); err != nil {
 			session.fail(&irma.SessionError{ErrorType: irma.ErrorCrypto, Err: err})
 			return
 		}
+
+		difference := timeEnd.Sub(timeStart).Microseconds()
+
+		irma.StopProgramWhenNeeded(session.client.UseTor, session.client.httpClient)
+
+		irma.ClearFlutterMeasurements()
+
+		switch session.client.MeasurementType {
+		case "issuanceMeasurement":
+			irma.AddMeasurementResult(irma.IssuanceNewSession, session.client.NewSessionMeasurement)
+			irma.AddMeasurementResult(irma.IssuanceRespondPermission, difference)
+
+			if session.client.KssGetCommitmentsMeasurement != -1 &&
+				session.client.KssGetProofPsMeasurement != -1 {
+				irma.AddMeasurementResult(irma.KssGetCommitments, session.client.KssGetCommitmentsMeasurement)
+				irma.AddMeasurementResult(irma.KssGetProofPs, session.client.KssGetProofPsMeasurement)
+			}
+		case "torIssuanceMeasurement":
+			irma.AddMeasurementResult(irma.TorIssuanceNewSession, session.client.NewSessionMeasurement)
+			irma.AddMeasurementResult(irma.TorIssuanceRespondPermission, difference)
+
+			if session.client.KssGetCommitmentsMeasurement != -1 &&
+				session.client.KssGetProofPsMeasurement != -1 {
+				irma.AddMeasurementResult(irma.TorKssGetCommitments, session.client.KssGetCommitmentsMeasurement)
+				irma.AddMeasurementResult(irma.TorKssGetProofPs, session.client.KssGetProofPsMeasurement)
+			}
+		case "issuanceHttpsMeasurement":
+			irma.AddMeasurementResult(irma.IssuanceHttpsNewSession, session.client.NewSessionMeasurement)
+			irma.AddMeasurementResult(irma.IssuanceHttpsRespondPermission, difference)
+
+			if session.client.KssGetCommitmentsMeasurement != -1 &&
+				session.client.KssGetProofPsMeasurement != -1 {
+				irma.AddMeasurementResult(irma.KssHttpsGetCommitments, session.client.KssGetCommitmentsMeasurement)
+				irma.AddMeasurementResult(irma.KssHttpsGetProofPs, session.client.KssGetProofPsMeasurement)
+			}
+		case "torIssuanceHttpsMeasurement":
+			irma.AddMeasurementResult(irma.TorIssuanceHttpsNewSession, session.client.NewSessionMeasurement)
+			irma.AddMeasurementResult(irma.TorIssuanceHttpsRespondPermission, difference)
+
+			if session.client.KssGetCommitmentsMeasurement != -1 &&
+				session.client.KssGetProofPsMeasurement != -1 {
+				irma.AddMeasurementResult(irma.TorKssHttpsGetCommitments, session.client.KssGetCommitmentsMeasurement)
+				irma.AddMeasurementResult(irma.TorKssHttpsGetProofPs, session.client.KssGetProofPsMeasurement)
+			}
+		}
+
 		log, err = session.createLogEntry(message)
 		if err != nil {
 			irma.Logger.Warn(errors.WrapPrefix(err, "Failed to create log entry", 0).ErrorStack())

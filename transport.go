@@ -59,7 +59,7 @@ func SetLogger(logger *logrus.Logger) {
 }
 
 // NewHTTPTransport returns a new HTTPTransport.
-func NewHTTPTransport(serverURL string, forceHTTPS bool) *HTTPTransport {
+func NewHTTPTransport(serverURL string, forceHTTPS bool, httpClients ...*http.Client) *HTTPTransport {
 	if Logger.IsLevelEnabled(logrus.TraceLevel) {
 		transportlogger = log.New(Logger.WriterLevel(logrus.TraceLevel), "transport: ", 0)
 	} else {
@@ -94,10 +94,15 @@ func NewHTTPTransport(serverURL string, forceHTTPS bool) *HTTPTransport {
 			// Don't retry on 5xx (which retryablehttp does by default)
 			return err != nil || resp.StatusCode == 0, err
 		},
-		HTTPClient: &http.Client{
+	}
+
+	if len(httpClients) > 0 {
+		client.HTTPClient = httpClients[0]
+	} else {
+		client.HTTPClient = &http.Client{
 			Timeout:   time.Second * 3,
 			Transport: &innerTransport,
-		},
+		}
 	}
 
 	var host string

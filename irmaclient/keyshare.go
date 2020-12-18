@@ -382,14 +382,15 @@ func (ks *keyshareSession) GetCommitments() {
 		transport := ks.transports[managerID]
 		comms := &proofPCommitmentMap{}
 
+		irma.StopProgramWhenNeeded(ks.client.UseTor, ks.client.httpClient)
+
 		timeStart := time.Now()
 
 		err := transport.Post("prove/getCommitments", comms, pkids[managerID])
 
 		timeEnd := time.Now()
-		difference := timeEnd.Sub(timeStart).Microseconds()
 
-		ks.client.KssGetCommitmentsMeasurement = difference
+		irma.StopProgramWhenNeeded(ks.client.UseTor, ks.client.httpClient)
 
 		if err != nil {
 			if err.(*irma.SessionError).RemoteError != nil &&
@@ -403,6 +404,9 @@ func (ks *keyshareSession) GetCommitments() {
 			}
 			ks.sessionHandler.KeyshareError(&managerID, err)
 			return
+		} else {
+			difference := timeEnd.Sub(timeStart).Microseconds()
+			ks.client.KssGetCommitmentsMeasurement = difference
 		}
 		for pki, c := range comms.Commitments {
 			commitments[pki] = c
@@ -439,18 +443,23 @@ func (ks *keyshareSession) GetProofPs() {
 		}
 		var j string
 
+		irma.StopProgramWhenNeeded(ks.client.UseTor, ks.client.httpClient)
+
 		timeStart := time.Now()
 
 		err := transport.Post("prove/getResponse", &j, challenge)
+
+		timeEnd := time.Now()
+
+		irma.StopProgramWhenNeeded(ks.client.UseTor, ks.client.httpClient)
+
 		if err != nil {
 			ks.sessionHandler.KeyshareError(&managerID, err)
 			return
+		} else {
+			difference := timeEnd.Sub(timeStart).Microseconds()
+			ks.client.KssGetProofPsMeasurement = difference
 		}
-
-		timeEnd := time.Now()
-		difference := timeEnd.Sub(timeStart).Microseconds()
-
-		ks.client.KssGetProofPsMeasurement = difference
 
 		responses[managerID] = j
 	}
