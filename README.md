@@ -10,7 +10,7 @@ This README of irmago-measurements might not be complete.
 
 Here is the additional setup that we should perform after the irmago project's setup.
 
-This project tries to send emails from irmamobilemeasurementtests@gmail.com. The current configuration is in the `sendMail` function of the file `/measurementHelpers.go`. We can change this configuration to make sending from a different email possible. In this configuration is the `smtpServerHost` the 'SMTP server host,' `smtpServerAddress` the 'SMTP server address,' and `emailAddress` the email address. Sending emails from irmamobilemeasurementtests@gmail.com might not work.
+This project tries to send emails from irmamobilemeasurementtests@gmail.com. The current configuration is in the `sendMail` function of the file `/measurementHelpers.go`. We can change this configuration to make sending from a different email possible. In this configuration is the `smtpServerHost` the 'SMTP server host,' `smtpServerAddress` the 'SMTP server address,' and `emailAddress` the email address. Sending emails from irmamobilemeasurementtests@gmail.com might not work. ----- send them to same email?
 
 ## The IRMA Server and Requestor That the Study Used
 
