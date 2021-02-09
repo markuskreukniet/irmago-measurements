@@ -8,6 +8,8 @@ This README of irmago-measurements might not be complete.
 
 ## Additional Setup
 
+Here is the additional setup that we should perform after the irmago project's setup.
+
 This project can send emails from irmamobilemeasurementtests@gmail.com. The current configuration is in the `sendMail` function of the file `/measurementHelpers.go`. We can change this configuration to make sending from a different email possible. In this configuration is the `smtpServerHost` the 'SMTP server host,' `smtpServerAddress` the 'SMTP server address,' and `emailAddress` the email address.
 
 ## The IRMA Server and Requestor That the Study Used
