@@ -1,6 +1,6 @@
 # irmago-measurements
 
-The purpose of this project is to perform measurements of the study 'IRMA and Network Anonymity with Tor' by Markus Kreukniet. This project is a modified version of the project ['irmago'](https://github.com/privacybydesign/irmago) commit ffa1dd898b6f7bf9e71493a4fe4a0b5eb95d2f55, which was committed on 5 June 2020. This project (irmago-measurements) requires the project ['irmamobile-measurements'](https://github.com/markuskreukniet/irmamobile-measurements) The setup of the irmago-measurements project should be the same as the setup of irmago.
+The purpose of this project is to perform measurements for the study 'IRMA and Network Anonymity with Tor' by Markus Kreukniet. This project is a modified version of the project ['irmago'](https://github.com/privacybydesign/irmago) commit ffa1dd898b6f7bf9e71493a4fe4a0b5eb95d2f55, which was committed on 5 June 2020. This project (irmago-measurements) requires the project ['irmamobile-measurements'](https://github.com/markuskreukniet/irmamobile-measurements) The setup of the irmago-measurements project should be the same as the setup of irmago.
 
 The project irmamobile-measurements contains information in its README that also might be useful for irmago-measurements.
 
