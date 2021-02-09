@@ -12,4 +12,4 @@ This project can send emails from irmamobilemeasurementtests@gmail.com. The curr
 
 ## The IRMA Server and Requestor That the Study Used
 
-The study built this project successfully, and a result of this build is the file `/apk/app-alpha-debug.apk`. We can use this file to run the same IRMA server and requestor that the study used for measurements. The study ran this IRMA server and requestor on a Ubuntu Server.
+The study built this project successfully, and a result of this build is the file `/irma_server_and_requestor/irma`. We can use this file to run the same IRMA server and requestor that the study used for measurements. The study ran this IRMA server and requestor on a Ubuntu Server.
